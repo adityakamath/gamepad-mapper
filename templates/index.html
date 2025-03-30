@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮  Gamepad Mapper</title>
+    <!-- Add Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075);
+            --shadow-md: 0 .5rem 1rem rgba(0,0,0,.15);
+            --shadow-lg: 0 1rem 3rem rgba(0,0,0,.175);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .name-section {
+            background: var(--background-color);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            margin-bottom: 25px;
+        }
+
+        .name-section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .name-section h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .custom-name-input {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .controller-name {
+            width: 300px !important;
+            font-size: 14px !important;
+            padding: 8px 12px !important;
+            text-align: left;
+            border: 1px solid #c0c4c9;
+            border-radius: 4px;
+            transition: var(--transition);
+            background: var(--background-color);
+        }
+
+        .controller-name:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+        }
+
+        .gamepad-name {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .gamepad-name .header-emoji {
+            display: inline-block;
+            transform: scale(1.5);
+            margin-right: 8px;
+        }
+
+        .info-section {
+            background: var(--card-background);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            margin-bottom: 25px;
+        }
+
+        .info-section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .info-section h3, .control-section h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .info-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            background: var(--background-color);
+            border-radius: 8px;
+        }
+
+        .info-row-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .info-row-section.secondary {
+            opacity: 0.8;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            background: var(--card-background);
+            border-radius: 6px;
+            box-shadow: var(--shadow-sm);
+            min-width: fit-content;
+            flex: 0 1 auto;
+        }
+
+        .info-item.full-width {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            min-width: 0;
+            gap: 16px;
+        }
+
+        .info-item.full-width .info-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .info-content .info-value {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+        }
+
+        .info-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 16px;
+            border-left: 1px solid var(--border-color);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .connection-status {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .connection-status.connected {
+            background-color: var(--success-color);
+        }
+
+        .connection-status.disconnected {
+            background-color: #dc3545;
+        }
+
+        .info-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .info-value {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 12px;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .info-value.primary {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .info-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .info-dot.connected {
+            background-color: var(--success-color);
+            box-shadow: 0 0 5px var(--success-color);
+        }
+
+        .info-dot.disconnected {
+            background-color: #dc3545;
+            box-shadow: 0 0 5px #dc3545;
+        }
+
+        .control-section {
+            background: var(--card-background);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            margin-bottom: 25px;
+        }
+
+        .control-section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .control-group {
+            background: var(--background-color);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .control-group h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+
+        .control-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .control-item {
+            background: var(--card-background);
+            padding: 8px;
+            border-radius: 6px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .control-item:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .control-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .control-item .control-label {
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .control-item .control-value {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 11px;
+            opacity: 0.8;
+        }
+
+        .axis-container {
+            position: relative;
+            width: 100%;
+            padding-top: 100%;
+            margin: 10px 0;
+            background: var(--card-background);
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .axis-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+        }
+
+        .axis-line {
+            position: absolute;
+            background-color: var(--border-color);
+        }
+
+        .axis-line.horizontal {
+            width: 100%;
+            height: 1px;
+            top: 50%;
+        }
+
+        .axis-line.vertical {
+            width: 1px;
+            height: 100%;
+            left: 50%;
+        }
+
+        .axis-label {
+            position: absolute;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        .axis-label.left { left: 5px; top: 50%; transform: translateY(-50%); }
+        .axis-label.right { right: 5px; top: 50%; transform: translateY(-50%); }
+        .axis-label.top { top: 5px; left: 50%; transform: translateX(-50%); }
+        .axis-label.bottom { bottom: 5px; left: 50%; transform: translateX(-50%); }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .info-item.full-width {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .info-status {
+                padding-left: 0;
+                border-left: none;
+                justify-content: space-between;
+            }
+
+            .control-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-section">
+            <h1 class="gamepad-name">
+                <span class="header-emoji">🎮</span>
+                Gamepad Mapper
+            </h1>
+        </div>
+
+        <div class="name-section">
+            <h3>Controller Name</h3>
+            <div class="custom-name-input">
+                <input type="text" class="controller-name" id="controllerName" placeholder="Enter custom controller name">
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Controller Information</h3>
+            <div class="info-rows">
+                <div class="info-row">
+                    <div class="info-row-section">
+                        <div class="info-item full-width">
+                            <div class="info-content">
+                                <div class="info-dot" id="connectionDot"></div>
+                                <div>
+                                    <div class="info-label">Controller ID</div>
+                                    <div class="info-value" id="controllerId">Not Connected</div>
+                                </div>
+                            </div>
+                            <div class="info-status">
+                                <span class="connection-status" id="connectionStatus">Disconnected</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-row-section">
+                        <div class="info-item">
+                            <div>
+                                <div class="info-label">Index</div>
+                                <div class="info-value" id="controllerIndex">-</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <div class="info-label">Mapping</div>
+                                <div class="info-value" id="controllerMapping">-</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <div class="info-label">Timestamp</div>
+                                <div class="info-value" id="controllerTimestamp">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <h3>Controls</h3>
+            <div class="control-grid">
+                <div class="control-group">
+                    <h4>Buttons</h4>
+                    <div class="control-items" id="buttonContainer">
+                        <!-- Buttons will be added here dynamically -->
+                    </div>
+                </div>
+                <div class="control-group">
+                    <h4>Axes</h4>
+                    <div class="control-items" id="axesContainer">
+                        <!-- Axes will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Created by <a href="https://github.com/adityakamath" target="_blank">Aditya Kamath</a> | <a href="https://github.com/adityakamath/gamepad-mapper" target="_blank">View on GitHub</a></p>
+    </footer>
+
+    <script>
+        let gamepad = null;
+        let animationFrameId = null;
+        let buttonElements = [];
+        let axesElements = [];
+
+        function init() {
+            window.addEventListener('gamepadconnected', handleGamepadConnected);
+            window.addEventListener('gamepaddisconnected', handleGamepadDisconnected);
+            updateStatus();
+        }
+
+        function handleGamepadConnected(event) {
+            gamepad = event.gamepad;
+            updateStatus();
+            createControls();
+            startPolling();
+        }
+
+        function handleGamepadDisconnected(event) {
+            gamepad = null;
+            updateStatus();
+            stopPolling();
+        }
+
+        function updateStatus() {
+            const connectionDot = document.getElementById('connectionDot');
+            const connectionStatus = document.getElementById('connectionStatus');
+            const controllerId = document.getElementById('controllerId');
+            const controllerIndex = document.getElementById('controllerIndex');
+            const controllerMapping = document.getElementById('controllerMapping');
+            const controllerTimestamp = document.getElementById('controllerTimestamp');
+
+            if (gamepad) {
+                connectionDot.className = 'info-dot connected';
+                connectionStatus.className = 'connection-status connected';
+                connectionStatus.textContent = 'Connected';
+                controllerId.textContent = gamepad.id;
+                controllerIndex.textContent = gamepad.index;
+                controllerMapping.textContent = gamepad.mapping || 'No mapping';
+                controllerTimestamp.textContent = gamepad.timestamp.toFixed(2);
+            } else {
+                connectionDot.className = 'info-dot disconnected';
+                connectionStatus.className = 'connection-status disconnected';
+                connectionStatus.textContent = 'Disconnected';
+                controllerId.textContent = 'Not Connected';
+                controllerIndex.textContent = '-';
+                controllerMapping.textContent = '-';
+                controllerTimestamp.textContent = '-';
+            }
+        }
+
+        function createControls() {
+            const buttonContainer = document.getElementById('buttonContainer');
+            const axesContainer = document.getElementById('axesContainer');
+
+            buttonContainer.innerHTML = '';
+            axesContainer.innerHTML = '';
+            buttonElements = [];
+            axesElements = [];
+
+            // Create button elements
+            for (let i = 0; i < gamepad.buttons.length; i++) {
+                const buttonDiv = document.createElement('div');
+                buttonDiv.className = 'control-item';
+                buttonDiv.innerHTML = `
+                    <div class="control-label">Button ${i}</div>
+                    <div class="control-value">0.00</div>
+                `;
+                buttonContainer.appendChild(buttonDiv);
+                buttonElements.push(buttonDiv);
+            }
+
+            // Create axes elements
+            for (let i = 0; i < gamepad.axes.length; i++) {
+                const axisDiv = document.createElement('div');
+                axisDiv.className = 'control-item';
+                axisDiv.innerHTML = `
+                    <div class="control-label">Axis ${i}</div>
+                    <div class="control-value">0.00</div>
+                `;
+                axesContainer.appendChild(axisDiv);
+                axesElements.push(axisDiv);
+            }
+        }
+
+        function updateControls() {
+            if (!gamepad) return;
+
+            // Get the latest gamepad state
+            const gamepads = navigator.getGamepads();
+            gamepad = gamepads[gamepad.index];
+
+            if (!gamepad) return;
+
+            // Update buttons
+            for (let i = 0; i < gamepad.buttons.length; i++) {
+                const button = gamepad.buttons[i];
+                const element = buttonElements[i];
+                const value = button.value.toFixed(2);
+                
+                element.classList.toggle('active', button.pressed);
+                element.querySelector('.control-value').textContent = value;
+            }
+
+            // Update axes
+            for (let i = 0; i < gamepad.axes.length; i++) {
+                const value = gamepad.axes[i].toFixed(2);
+                axesElements[i].querySelector('.control-value').textContent = value;
+            }
+
+            // Update timestamp
+            document.getElementById('controllerTimestamp').textContent = gamepad.timestamp.toFixed(2);
+        }
+
+        function startPolling() {
+            if (!animationFrameId) {
+                function poll() {
+                    updateControls();
+                    animationFrameId = requestAnimationFrame(poll);
+                }
+                animationFrameId = requestAnimationFrame(poll);
+            }
+        }
+
+        function stopPolling() {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+        }
+
+        // Initialize when the page loads
+        window.addEventListener('load', init);
+
+        // Handle custom controller name
+        document.getElementById('controllerName').addEventListener('input', function(e) {
+            const customName = e.target.value;
+            // You can save this name or use it as needed
+            console.log('Custom controller name:', customName);
+        });
+    </script>
+</body>
+</html>
