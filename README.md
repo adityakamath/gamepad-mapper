@@ -1,6 +1,6 @@
 # Gamepad Mapper
 
-A web-based gamepad mapping application built with Flask that allows users to test and configure their gamepad inputs in real-time. test
+A web-based gamepad mapping application built with Flask that allows users to test and configure their gamepad inputs in real-time.
 
 ## Features
 
