@@ -1,0 +1,195 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  
+  .error {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background-color: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 4px;
+    color: #dc2626;
+  }
+  
+  .gamepadSelector {
+    margin-bottom: 2rem;
+  }
+  
+  .gamepadSelector label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #4b5563;
+  }
+  
+  .select {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 1rem;
+  }
+  
+  .noGamepad {
+    padding: 2rem;
+    text-align: center;
+    background-color: #f3f4f6;
+    border-radius: 8px;
+    color: #6b7280;
+  }
+  
+  .gamepadInfo {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .header {
+    padding: 1.5rem;
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #1e293b;
+  }
+  
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+  
+  .statusDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ef4444;
+  }
+  
+  .statusDot.connected {
+    background-color: #22c55e;
+  }
+  
+  .details {
+    padding: 1rem 1.5rem;
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+  
+  .details > div {
+    margin-bottom: 0.5rem;
+  }
+  
+  .details > div:last-child {
+    margin-bottom: 0;
+  }
+  
+  .axesContainer,
+  .buttonsContainer {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .axesContainer h3,
+  .buttonsContainer h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    color: #1e293b;
+  }
+  
+  .axesGrid {
+    display: grid;
+    gap: 1rem;
+  }
+  
+  .axisItem {
+    background-color: #f8fafc;
+    padding: 1rem;
+    border-radius: 4px;
+  }
+  
+  .axisLabel {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+  }
+  
+  .axisValue {
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+  }
+  
+  .axisBar {
+    height: 8px;
+    background-color: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .axisBarFill {
+    height: 100%;
+    background-color: #4a90e2;
+    transition: width 0.1s ease-out;
+  }
+  
+  .buttonsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+  }
+  
+  .button {
+    background-color: #f8fafc;
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+  }
+  
+  .buttonPressed {
+    background-color: #4a90e2;
+    border-color: #4a90e2;
+    color: white;
+  }
+  
+  .buttonPressed .buttonName,
+  .buttonPressed .buttonValue,
+  .buttonPressed .buttonTouched {
+    color: white;
+  }
+  
+  .buttonName {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+  }
+  
+  .buttonValue {
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+  
+  .buttonTouched {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: #4a90e2;
+  } 

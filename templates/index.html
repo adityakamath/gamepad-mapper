@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮  Gamepad Mapper</title>
+    <!-- Add Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075);
+            --shadow-md: 0 .5rem 1rem rgba(0,0,0,.15);
+            --shadow-lg: 0 1rem 3rem rgba(0,0,0,.175);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .name-section {
+            background: var(--background-color);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            margin-bottom: 25px;
+        }
+
+        .name-section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .name-section h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .custom-name-input {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .controller-name {
+            width: 300px !important;
+            font-size: 14px !important;
+            padding: 8px 12px !important;
+            text-align: left;
+            border: 1px solid #c0c4c9;
+            border-radius: 4px;
+            transition: var(--transition);
+            background: var(--background-color);
+        }
+
+        .controller-name:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+        }
+
+        .gamepad-name {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .gamepad-name .header-emoji {
+            display: inline-block;
+            transform: scale(1.5);
+            margin-right: 8px;
+        }
+
+        .info-section {
+            background: var(--card-background);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            margin-bottom: 25px;
+        }
+
+        .info-section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .info-section h3, .control-section h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .info-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            background: var(--background-color);
+            border-radius: 8px;
+        }
+
+        .info-row-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .info-row-section.secondary {
+            opacity: 0.8;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            background: var(--card-background);
+            border-radius: 6px;
+            box-shadow: var(--shadow-sm);
+            min-width: fit-content;
+            flex: 0 1 auto;
+        }
+
+        .info-item.full-width {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            min-width: 0;
+            gap: 16px;
+        }
+
+        .info-item.full-width .info-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .info-content .info-value {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+        }
+
+        .info-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 16px;
+            border-left: 1px solid var(--border-color);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .connection-status {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .connection-status.connected {
+            background-color: var(--success-color);
+        }
+
+        .connection-status.disconnected {
+            background-color: #dc3545;
+        }
+
+        .info-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .info-value {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 12px;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .info-value.primary {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .info-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .info-dot.connected {
+            background-color: var(--success-color);
+            box-shadow: 0 0 5px var(--success-color);
+        }
+
+        .info-dot.disconnected {
+            background-color: var(--secondary-color);
+        }
+
+        .connection-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .control-section {
+            background: var(--card-background);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .control-section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .control-section .buttons-grid,
+        .control-section .axes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px 32px;
+            padding: 12px;
+            background: var(--background-color);
+            border-radius: 8px;
+        }
+
+        .button-item, .axis-item {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            gap: 4px;
+            background: var(--card-background);
+            border-radius: 6px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .button-item:hover,
+        .axis-item:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .button-label, .axis-label {
+            min-width: 25px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .button-display, .value-display {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            margin-left: 0;
+            flex-wrap: nowrap;
+            width: 60px;
+            flex-shrink: 0;
+            padding: 0 4px;
+        }
+
+        .button-bar-container {
+            width: 8px;
+            height: 40px;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            margin: 0;
+        }
+
+        .button-bar-fill {
+            width: 100%;
+            height: 0%;
+            background-color: var(--primary-color);
+            transition: height 0.1s ease, box-shadow 0.1s ease;
+            position: absolute;
+            bottom: 0;
+            opacity: 0.8;
+        }
+
+        .button-bar-fill.pressed {
+            height: 100%;
+            box-shadow: 0 0 10px var(--primary-color);
+            opacity: 1;
+        }
+
+        .value-number {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            min-width: 38px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .axis-bar-container {
+            width: 8px;
+            height: 40px;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            margin: 0;
+        }
+
+        .axis-bar-fill {
+            width: 100%;
+            height: 50%;
+            background-color: var(--primary-color);
+            transition: height 0.1s ease, bottom 0.1s ease, box-shadow 0.1s ease;
+            position: absolute;
+            bottom: 50%;
+            opacity: 0.8;
+        }
+
+        .axis-bar-fill.positive {
+            bottom: 50%;
+        }
+
+        .axis-bar-fill.negative {
+            bottom: 0;
+            height: 50%;
+        }
+
+        .input-name {
+            padding: 4px 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 13px;
+            transition: var(--transition);
+            width: 85px;
+            margin-left: 0;
+            background: var(--card-background);
+        }
+
+        .input-name:disabled {
+            background-color: var(--background-color);
+            color: var(--text-secondary);
+            border-color: var(--border-color);
+            cursor: not-allowed;
+        }
+
+        .input-name:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+        }
+
+        .toggle-na {
+            width: 24px;
+            height: 24px;
+            padding: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 2px;
+            opacity: 0.5;
+        }
+
+        .toggle-na:hover {
+            background-color: var(--border-color);
+            opacity: 0.8;
+        }
+
+        .toggle-na.active {
+            opacity: 1;
+            color: var(--primary-color);
+        }
+
+        .toggle-na svg {
+            width: 16px;
+            height: 16px;
+            transition: var(--transition);
+        }
+
+        .unused-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            white-space: nowrap;
+            margin-left: 5px;
+        }
+
+        .download-button {
+            margin-left: auto;
+        }
+
+        .download-button button {
+            padding: 8px 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .download-button button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .no-gamepad {
+            text-align: center;
+            padding: 60px 20px;
+            margin: 0 auto;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            min-height: 60vh;
+            justify-content: center;
+        }
+
+        .no-gamepad p {
+            font-size: 16px;
+            margin: 0;
+            color: var(--text-primary);
+            line-height: 1.5;
+            white-space: nowrap;
+        }
+
+        .waiting-animation {
+            font-size: 120px;
+            animation: float 3s ease-in-out infinite;
+            filter: brightness(1);
+            line-height: 1;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                filter: brightness(1);
+            }
+            50% {
+                transform: translateY(-10px) scale(1.02);
+                filter: brightness(1.1);
+            }
+        }
+
+        .controller-buttons {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .controller-button {
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        .gamepad-icon {
+            width: 100%;
+            height: 100%;
+            fill: var(--primary-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+        }
+
+        .pulse-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            opacity: 0;
+            animation: pulse-ring 2s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .custom-name-input {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .controller-name {
+                width: 100% !important;
+                margin-right: 0;
+            }
+
+            .download-button {
+                margin-left: 0;
+                text-align: center;
+            }
+
+            .input-name {
+                width: 120px;
+            }
+
+            .axis-bar-container {
+                width: 150px;
+            }
+
+            .info-item.full-width {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .info-status {
+                padding-left: 0;
+                border-left: none;
+                padding-top: 8px;
+                border-top: 1px solid var(--border-color);
+                width: 100%;
+            }
+        }
+
+        .vibration-section {
+            margin-top: 20px;
+            background: var(--card-background);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .vibration-section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .vibration-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .slider-label {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .intensity-slider {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--border-color);
+            border-radius: 3px;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .intensity-slider:hover {
+            opacity: 1;
+        }
+
+        .intensity-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .intensity-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .slider-value {
+            min-width: 45px;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .vibration-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 5px;
+        }
+
+        .vibration-button {
+            padding: 8px 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .vibration-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .vibration-button:disabled {
+            background-color: var(--secondary-color);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .vibration-button.active {
+            animation: vibrate 0.3s infinite;
+        }
+
+        @keyframes vibrate {
+            0% { transform: translate(0); }
+            25% { transform: translate(2px); }
+            75% { transform: translate(-2px); }
+            100% { transform: translate(0); }
+        }
+
+        .support-status {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .support-status.supported {
+            color: var(--success-color);
+        }
+
+        .support-status.unsupported {
+            color: #dc3545;
+        }
+
+        .joysticks-section {
+            margin-top: 20px;
+            padding: 12px;
+            background: var(--background-color);
+            border-radius: 8px;
+        }
+
+        .joysticks-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .joystick-container {
+            background: var(--card-background);
+            padding: 12px;
+            border-radius: 6px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .joystick-container:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .joystick-container h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            color: var(--text-primary);
+        }
+
+        .joystick-content {
+            min-height: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .joystick-placeholder {
+            text-align: center;
+            padding: 8px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            max-width: 200px;
+        }
+
+        .joystick-placeholder .info-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .joystick-placeholder .info-icon {
+            width: 14px;
+            height: 14px;
+            fill: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .joystick-placeholder p {
+            margin: 0 0 4px 0;
+            font-weight: 500;
+        }
+
+        .joystick-placeholder ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+        }
+
+        .joystick-placeholder li {
+            margin: 2px 0;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 10px;
+        }
+
+        .joystick-visualization {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .joystick-area {
+            width: 100px;
+            height: 100px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            position: relative;
+            background: var(--background-color);
+        }
+
+        .joystick-position {
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+            box-shadow: var(--shadow-sm);
+            opacity: 0.8;
+        }
+
+        .joystick-values {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .value-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .value-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .joystick-values .value-number {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 13px;
+            color: var(--text-primary);
+            min-width: 45px;
+            text-align: right;
+        }
+
+        .joystick-examples {
+            font-size: 10px;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 4px !important;
+        }
+
+        .guide-content {
+            padding: 12px 16px;
+            background: var(--background-color);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .guide-content.expanded {
+            display: block;
+        }
+
+        .guide-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .guide-header:hover {
+            opacity: 0.8;
+        }
+
+        .guide-header .arrow-icon {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .guide-header .arrow-icon.expanded {
+            transform: rotate(90deg);
+        }
+
+        .guide-header h3 {
+            margin: 0;
+        }
+
+        .guide-list {
+            list-style-type: disc;
+            margin: 0;
+            padding-left: 24px;
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .guide-list li {
+            margin-bottom: 8px;
+        }
+
+        .guide-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .guide-list .guide-sublist {
+            list-style-type: circle;
+            margin: 8px 0 8px 20px;
+            padding-left: 20px;
+            font-size: 13px;
+        }
+
+        .guide-list .guide-sublist li {
+            margin-bottom: 4px;
+        }
+
+        .guide-list .inline-icon {
+            display: inline-block;
+            margin: 0 2px;
+            opacity: 0.7;
+        }
+
+        .guide-note {
+            margin-top: 12px;
+            padding: 10px 12px;
+            background-color: var(--card-background);
+            border-radius: 6px;
+            box-shadow: var(--shadow-sm);
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .guide-note p {
+            margin: 0;
+        }
+
+        .guide-note strong {
+            color: var(--text-primary);
+        }
+
+        .info-item .test-vibration-button {
+            padding: 4px 8px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+
+        .info-item .test-vibration-button:disabled {
+            background-color: var(--secondary-color);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .info-item .test-vibration-button:not(:disabled):hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .info-item .test-vibration-button.active {
+            animation: vibrate 0.3s infinite;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: auto;
+        }
+
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .footer a:hover {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .footer {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="gamepadDisplay">
+            <div class="no-gamepad">
+                <div class="waiting-animation">🎮</div>
+                <p>No gamepad detected. Please connect a gamepad and press any button to continue...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="copyright">
+            © 2025 <a href="https://kamathsblog.com/" target="_blank">kamathsblog.com</a>
+        </div>
+        <div class="attribution">
+            Vibed into existence by <a href="https://x.com/kamathsblog" target="_blank">@kamathsblog</a> while sleep deprived
+        </div>
+    </div>
+
+    <!-- Add Bootstrap JS and its dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        // Cache frequently accessed DOM elements
+        const gamepadDisplayElement = document.getElementById("gamepadDisplay");
+        let gamepadIndex = null;
+        let gamepad = null;
+        let animationFrameId = null;
+        let lastUpdateTime = 0;
+        const FRAME_RATE = 60; // 60fps
+        const FRAME_INTERVAL = 1000 / FRAME_RATE;
+
+        // Cache for DOM elements to avoid repeated queries
+        const domCache = {
+            buttons: {},
+            axes: {},
+            info: {}
+        };
+
+        // State management
+        let inputStates = {
+            buttons: {},
+            axes: {},
+            controllerName: ''
+        };
+
+        // Standard Gamepad Mapping Constants
+        const STANDARD_BUTTON_MAPPINGS = {
+            0: 'Bottom',
+            1: 'Right',
+            2: 'Left',
+            3: 'Top',
+            4: 'L1',
+            5: 'R1',
+            6: 'L2',
+            7: 'R2',
+            8: 'Select',
+            9: 'Start',
+            10: 'LJoy',
+            11: 'RJoy',
+            12: 'DPad Up',
+            13: 'DPad Down',
+            14: 'DPad Left',
+            15: 'DPad Right',
+            16: 'Home'
+        };
+
+        const STANDARD_AXES_MAPPINGS = {
+            0: 'LJoyX',
+            1: 'LJoyY',
+            2: 'RJoyX',
+            3: 'RJoyY'
+        };
+
+        // XR Standard Gamepad Mapping Constants
+        const XR_STANDARD_BUTTON_MAPPINGS = {
+            0: 'Trigger',
+            1: 'Squeeze',
+            2: 'Touch',
+            3: 'Thumb'
+        };
+
+        const XR_STANDARD_AXES_MAPPINGS = {
+            0: 'TouchX',
+            1: 'TouchY',
+            2: 'ThumbX',
+            3: 'ThumbY'
+        };
+
+        // Function to determine connection type based on gamepad properties
+        function determineConnectionType(gamepad) {
+            const id = gamepad.id.toLowerCase();
+            
+            // Check for explicit USB indicators first
+            if (id.includes('usb') || id.includes('xinput') || id.includes('dinput') || id.includes('standard gamepad')) {
+                return 'USB';
+            }
+            
+            // Then check for explicit Bluetooth indicators
+            if (id.includes('bluetooth')) {
+                return 'Bluetooth';
+            }
+            
+            // Check for WiFi indicators
+            if (id.includes('wifi')) {
+                return 'WiFi';
+            }
+
+            // If no explicit indicators found, check if connected via USB vendor ID
+            if (id.match(/vendor: [0-9a-f]+/i)) {
+                return 'USB';
+            }
+
+            return 'USB';
+        }
+
+        // Optimized utility functions
+        const getInputElement = (type, index) => {
+            const cacheKey = `${type}_${index}`;
+            if (!domCache[type][cacheKey]) {
+                domCache[type][cacheKey] = document.querySelector(`.input-name[data-type="${type}"][data-index="${index}"]`);
+            }
+            return domCache[type][cacheKey];
+        };
+        
+        const getCheckboxElement = (type, index) => {
+            const cacheKey = `${type}_checkbox_${index}`;
+            if (!domCache[type][cacheKey]) {
+                domCache[type][cacheKey] = document.querySelector(`.unused-checkbox[data-type="${type}"][data-index="${index}"]`);
+            }
+            return domCache[type][cacheKey];
+        };
+
+        const initializeState = (type, index) => {
+            if (!inputStates[type][index]) {
+                inputStates[type][index] = {
+                    name: '',
+                    unused: false,
+                    previousValue: '',
+                    hasBeenModified: false // Track if user has modified the value
+                };
+            }
+            return inputStates[type][index];
+        };
+
+        // Optimized gamepad display update
+        function updateGamepadDisplay() {
+            const currentTime = performance.now();
+            if (currentTime - lastUpdateTime < FRAME_INTERVAL) {
+                animationFrameId = requestAnimationFrame(updateGamepadDisplay);
+                return;
+            }
+            lastUpdateTime = currentTime;
+
+            gamepad = navigator.getGamepads()[gamepadIndex];
+            
+            if (!gamepad) {
+                stopGamepadUpdates();
+                return;
+            }
+
+            // Only create the full structure if it doesn't exist
+            if (!gamepadDisplayElement.querySelector('.gamepad-name')) {
+                const infoItems = getGamepadInfo(gamepad);
+                gamepadDisplayElement.innerHTML = `
+                    <div class="header-section">
+                        <div class="gamepad-name"><span class="header-emoji">🎮</span> Gamepad Mapper</div>
+                    </div>
+
+                    <div class="name-section">
+                        <div class="custom-name-input">
+                            <input type="text" placeholder="Gamepad name" class="input-name controller-name" 
+                                value="${inputStates.controllerName}">
+                            <div class="download-button">
+                                <button onclick="downloadMapping()">Download Mapping</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Gamepad Information</h3>
+                        <div class="info-rows">
+                            <div class="info-row">
+                                <div class="info-item full-width">
+                                    <div class="info-content">
+                                        <div class="info-label">ID</div>
+                                        <div class="info-value primary">${gamepad.id}</div>
+                                    </div>
+                                    <div class="info-status">
+                                        <div class="connection-status ${gamepad.connected ? 'connected' : 'disconnected'}">
+                                            ${gamepad.connected ? 'Connected' : 'Disconnected'}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-row-section">
+                                    <div class="info-item">
+                                        <div class="info-label">Index</div>
+                                        <div class="info-value">${gamepad.index}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Timestamp</div>
+                                        <div class="info-value timestamp" data-info-type="TIMESTAMP">${gamepad.timestamp.toFixed(5)}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Mapping</div>
+                                        <div class="info-value">${gamepad.mapping || 'N/A'}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Axes</div>
+                                        <div class="info-value">${gamepad.axes ? gamepad.axes.length : 'N/A'}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Buttons</div>
+                                        <div class="info-value">${gamepad.buttons ? gamepad.buttons.length : 'N/A'}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Vibration</div>
+                                        <div class="info-value">${gamepad.vibrationActuator ? 'Supported' : 'N/A'}</div>
+                                        ${gamepad.vibrationActuator ? `
+                                        <button class="test-vibration-button" onclick="testVibrationQuick(event)">
+                                            Test
+                                        </button>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                                <div class="info-row-section secondary">
+                                    <div class="info-item">
+                                        <div class="info-label">Hand</div>
+                                        <div class="info-value">${gamepad.hand || 'N/A'}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Haptic</div>
+                                        <div class="info-value">${gamepad.hapticActuators ? 'Available' : 'N/A'}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Display ID</div>
+                                        <div class="info-value">${gamepad.displayId || 'N/A'}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Pose</div>
+                                        <div class="info-value">${gamepad.pose ? 'Available' : 'N/A'}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Touch</div>
+                                        <div class="info-value">${gamepad.touchEvents ? 'Available' : 'N/A'}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Motion</div>
+                                        <div class="info-value">${gamepad.motionEvents ? 'Available' : 'N/A'}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Orientation</div>
+                                        <div class="info-value">${gamepad.orientationEvents ? 'Available' : 'N/A'}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Force Feedback</div>
+                                        <div class="info-value">${gamepad.forceFeedback ? 'Available' : 'N/A'}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <div class="guide-header" onclick="toggleGuide()">
+                            <svg class="arrow-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8.59,16.59L13.17,12L8.59,7.41L10,6l6,6l-6,6L8.59,16.59z"/>
+                            </svg>
+                            <h3>How-To Guide</h3>
+                        </div>
+                        <div class="info-content guide-content">
+                            <ul class="guide-list">
+                                <li>Test each button and joystick to identify their corresponding numbers (B0, B1, etc. for buttons and A0, A1, etc. for axes)</li>
+                                <li>Name each button/axis using the text input box next to it:
+                                    <ul class="guide-sublist">
+                                        <li>Standard gamepads will have pre-filled names - modify if incorrect or desired</li>
+                                        <li>Buttons: Use any naming convention you prefer</li>
+                                        <li>Axes: Use any naming convention, except for joysticks if you want to visualize them:</li>
+                                        <li>Left Joystick: Must use <strong>LJoyX</strong> and <strong>LJoyY</strong> for the horizontal and vertical axes</li>
+                                        <li>Right Joystick: Must use <strong>RJoyX</strong> and <strong>RJoyY</strong> for the horizontal and vertical axes</li>
+                                    </ul>
+                                </li>
+                                <li>Click the <svg class="inline-icon" viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px; vertical-align: middle;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg> toggle for any unused buttons or axes</li>
+                                <li>Enter a name for your gamepad at the top of this page (default: <strong>Untitled</strong>) and click <strong>Download Mapping</strong> to save your mapping as a JSON file</li>
+                            </ul>
+                            <div class="guide-note">
+                                <p><strong>Notes and Warnings:</strong></p>
+                                <ul style="list-style: none; padding-left: 0; margin-top: 8px;">
+                                    <li>• This implementation currently supports only one connected gamepad at a time.</li>
+                                    <li>• Support for multiple gamepads and advanced joystick features (circularity testing, performance indicators) are in development.</li>
+                                    <li>• Some gamepads have different mappings on different operating systems, please be aware.</li>
+                                    <li>• If you face any issues, first try with a different browser, there might be compatibility issues with some browsers.</li>
+                                    <li>• Inspired by <a href="https://hardwaretester.com/gamepad" target="_blank" style="color: var(--primary-color); text-decoration: none;">https://hardwaretester.com/gamepad</a>, but not a fan of the ads. Visit this page for more details, FAQs, etc.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="controls-grid">
+                        <div class="control-section">
+                            <h3>Axes</h3>
+                            <div class="axes-grid">
+                                ${Array.from(gamepad.axes).map((axis, index) => `
+                                    <div class="axis-item">
+                                        <span class="axis-label">A${index}</span>
+                                        <div class="value-display">
+                                            <div class="axis-bar-container" data-axis-index="${index}">
+                                                <div class="axis-bar-fill"></div>
+                                            </div>
+                                            <span class="value-number" data-axis-value="${index}">0.00</span>
+                                        </div>
+                                        <input type="text" placeholder="Axis mapping" class="input-name" 
+                                            data-type="axes" data-index="${index}"
+                                            value="${getInputState('axes', index, true)}">
+                                        <div class="toggle-na" data-type="axes" data-index="${index}" 
+                                            title="N/A" ${getInputState('axes', index, false) ? 'active' : ''}>
+                                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="joysticks-section">
+                                <div class="joysticks-grid">
+                                    <div class="joystick-container">
+                                        <h4>Left Joystick</h4>
+                                        <div class="joystick-content">
+                                            <div class="joystick-visualization" style="display: none;">
+                                                <div class="joystick-area">
+                                                    <div class="joystick-position" data-stick="left"></div>
+                                                </div>
+                                                <div class="joystick-values">
+                                                    <div class="value-item">
+                                                        <span class="value-label">X:</span>
+                                                        <span class="value-number" data-stick="left-x">0.00</span>
+                                                    </div>
+                                                    <div class="value-item">
+                                                        <span class="value-label">Y:</span>
+                                                        <span class="value-number" data-stick="left-y">0.00</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="joystick-placeholder">
+                                                <div class="info-header">
+                                                    <svg class="info-icon" viewBox="0 0 24 24">
+                                                        <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
+                                                    </svg>
+                                                    <p>Name axes exactly as:</p>
+                                                </div>
+                                                <ul>
+                                                    <li>X axis: LJoyX</li>
+                                                    <li>Y axis: LJoyY</li>
+                                                </ul>
+                                                <p class="joystick-examples">Case insensitive, no spaces</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="joystick-container">
+                                        <h4>Right Joystick</h4>
+                                        <div class="joystick-content">
+                                            <div class="joystick-visualization" style="display: none;">
+                                                <div class="joystick-area">
+                                                    <div class="joystick-position" data-stick="right"></div>
+                                                </div>
+                                                <div class="joystick-values">
+                                                    <div class="value-item">
+                                                        <span class="value-label">X:</span>
+                                                        <span class="value-number" data-stick="right-x">0.00</span>
+                                                    </div>
+                                                    <div class="value-item">
+                                                        <span class="value-label">Y:</span>
+                                                        <span class="value-number" data-stick="right-y">0.00</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="joystick-placeholder">
+                                                <div class="info-header">
+                                                    <svg class="info-icon" viewBox="0 0 24 24">
+                                                        <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
+                                                    </svg>
+                                                    <p>Name axes exactly as:</p>
+                                                </div>
+                                                <ul>
+                                                    <li>X axis: RJoyX</li>
+                                                    <li>Y axis: RJoyY</li>
+                                                </ul>
+                                                <p class="joystick-examples">Case insensitive, no spaces</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-section">
+                            <h3>Buttons</h3>
+                            <div class="buttons-grid">
+                                ${Array.from(gamepad.buttons).map((button, index) => `
+                                    <div class="button-item">
+                                        <span class="button-label">B${index}</span>
+                                        <div class="button-display">
+                                            <div class="button-bar-container" data-button-index="${index}">
+                                                <div class="button-bar-fill"></div>
+                                            </div>
+                                            <span class="value-number" data-button-value="${index}">0.00</span>
+                                        </div>
+                                        <input type="text" placeholder="Button mapping" class="input-name" 
+                                            data-type="buttons" data-index="${index}"
+                                            value="${getInputState('buttons', index, true)}">
+                                        <div class="toggle-na" data-type="buttons" data-index="${index}" 
+                                            title="N/A" ${getInputState('buttons', index, false) ? 'active' : ''}>
+                                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+                // Attach event listeners
+                const attachInputListener = (input) => {
+                    if (input.classList.contains('controller-name')) {
+                        input.addEventListener('input', (e) => {
+                            inputStates.controllerName = e.target.value;
+                        });
+                        return;
+                    }
+                    
+                    const type = input.dataset.type;
+                    const index = parseInt(input.dataset.index);
+                    
+                    // Set initial disabled state based on toggle
+                    const toggleElement = gamepadDisplayElement.querySelector(`.toggle-na[data-type="${type}"][data-index="${index}"]`);
+                    if (toggleElement && toggleElement.classList.contains('active')) {
+                        input.disabled = true;
+                    }
+                    
+                    input.addEventListener('input', (e) => {
+                        saveInputState(type, index, true, e.target.value);
+                    });
+                };
+
+                gamepadDisplayElement.querySelectorAll('.input-name').forEach(attachInputListener);
+
+                gamepadDisplayElement.querySelectorAll('.toggle-na').forEach(toggle => {
+                    toggle.addEventListener('click', () => {
+                        handleCheckboxChange(toggle);
+                    });
+                });
+
+                // Clear the cache since we've regenerated the elements
+                domCache.buttons = {};
+                domCache.axes = {};
+            }
+
+            // Update dynamic values using cached elements
+            // Update gamepad info values
+            const infoItems = getGamepadInfo(gamepad);
+            infoItems.forEach(item => {
+                const cacheKey = `info_${item.label}`;
+                if (!domCache.info[cacheKey]) {
+                    domCache.info[cacheKey] = gamepadDisplayElement.querySelector(`[data-info-type="${item.label}"]`);
+                }
+                if (domCache.info[cacheKey]) {
+                    domCache.info[cacheKey].textContent = item.value;
+                }
+            });
+
+            // Update button states
+            gamepad.buttons.forEach((button, index) => {
+                const cacheKey = `button_${index}`;
+                if (!domCache.buttons[cacheKey]) {
+                    domCache.buttons[cacheKey] = {
+                        fill: gamepadDisplayElement.querySelector(`[data-button-index="${index}"] .button-bar-fill`),
+                        value: gamepadDisplayElement.querySelector(`[data-button-value="${index}"]`)
+                    };
+                }
+                
+                const elements = domCache.buttons[cacheKey];
+                if (elements.fill) {
+                    elements.fill.style.height = `${button.value * 100}%`;
+                    elements.fill.className = `button-bar-fill ${button.pressed ? 'pressed' : ''}`;
+                    // Add glow effect based on value
+                    elements.fill.style.boxShadow = button.value > 0 ? `0 0 ${button.value * 10}px var(--primary-color)` : 'none';
+                    elements.fill.style.opacity = 0.8 + (button.value * 0.2); // Opacity scales from 0.8 to 1.0
+                }
+                if (elements.value) {
+                    elements.value.textContent = button.value.toFixed(2);
+                }
+            });
+
+            // Update axis states with cached elements
+            gamepad.axes.forEach((axis, index) => {
+                const cacheKey = `axis_${index}`;
+                if (!domCache.axes[cacheKey]) {
+                    domCache.axes[cacheKey] = {
+                        fill: gamepadDisplayElement.querySelector(`[data-axis-index="${index}"] .axis-bar-fill`),
+                        value: gamepadDisplayElement.querySelector(`[data-axis-value="${index}"]`)
+                    };
+                }
+                
+                const elements = domCache.axes[cacheKey];
+                if (elements.fill) {
+                    // For vertical bars, calculate height and position based on axis value
+                    const absValue = Math.abs(axis);
+                    const height = absValue * 50; // 50% max height from center
+                    elements.fill.style.height = `${height}%`;
+                    
+                    if (axis > 0) {
+                        elements.fill.style.bottom = '50%';
+                        elements.fill.className = 'axis-bar-fill positive';
+                    } else {
+                        elements.fill.style.bottom = `${50 - height}%`;
+                        elements.fill.className = 'axis-bar-fill negative';
+                    }
+
+                    // Add glow effect based on absolute value
+                    elements.fill.style.boxShadow = absValue > 0 ? `0 0 ${absValue * 10}px var(--primary-color)` : 'none';
+                    elements.fill.style.opacity = 0.8 + (absValue * 0.2); // Opacity scales from 0.8 to 1.0
+                }
+                if (elements.value) {
+                    elements.value.textContent = axis.toFixed(2);
+                }
+            });
+
+            // Update joystick visualizations based on axis names
+            const axisNameToIndex = {};
+            Array.from({ length: gamepad.axes.length }).forEach((_, index) => {
+                const input = getInputElement('axes', index);
+                if (input && !input.disabled) {
+                    const name = input.value;
+                    if (name) {
+                        axisNameToIndex[index] = name;
+                    }
+                }
+            });
+
+            // Helper function to check if a name matches the joystick pattern
+            const matchesJoystickPattern = (name, side, axis) => {
+                const exactPattern = new RegExp(`^${side}joy${axis}$`, 'i');
+                return name && exactPattern.test(name);
+            };
+
+            // Find axes for left joystick
+            const leftJoystickAxes = {
+                x: Object.entries(axisNameToIndex).find(([index, name]) => matchesJoystickPattern(name, 'l', 'x')),
+                y: Object.entries(axisNameToIndex).find(([index, name]) => matchesJoystickPattern(name, 'l', 'y'))
+            };
+            const hasLeftJoystick = leftJoystickAxes.x && leftJoystickAxes.y;
+            const leftJoystickContainer = gamepadDisplayElement.querySelector('.joystick-container:first-child');
+            if (leftJoystickContainer) {
+                const leftVisualization = leftJoystickContainer.querySelector('.joystick-visualization');
+                const leftPlaceholder = leftJoystickContainer.querySelector('.joystick-placeholder');
+                
+                if (hasLeftJoystick) {
+                    leftVisualization.style.display = 'flex';
+                    leftPlaceholder.style.display = 'none';
+                    const leftX = gamepad.axes[leftJoystickAxes.x[0]];
+                    const leftY = gamepad.axes[leftJoystickAxes.y[0]];
+                    updateJoystickPosition('left', leftX, leftY);
+                    updateJoystickValues('left', leftX, leftY);
+                } else {
+                    leftVisualization.style.display = 'none';
+                    leftPlaceholder.style.display = 'block';
+                    resetJoystickValues('left');
+                }
+            }
+
+            // Find axes for right joystick
+            const rightJoystickAxes = {
+                x: Object.entries(axisNameToIndex).find(([index, name]) => matchesJoystickPattern(name, 'r', 'x')),
+                y: Object.entries(axisNameToIndex).find(([index, name]) => matchesJoystickPattern(name, 'r', 'y'))
+            };
+            const hasRightJoystick = rightJoystickAxes.x && rightJoystickAxes.y;
+            const rightJoystickContainer = gamepadDisplayElement.querySelector('.joystick-container:last-child');
+            if (rightJoystickContainer) {
+                const rightVisualization = rightJoystickContainer.querySelector('.joystick-visualization');
+                const rightPlaceholder = rightJoystickContainer.querySelector('.joystick-placeholder');
+                
+                if (hasRightJoystick) {
+                    rightVisualization.style.display = 'flex';
+                    rightPlaceholder.style.display = 'none';
+                    const rightX = gamepad.axes[rightJoystickAxes.x[0]];
+                    const rightY = gamepad.axes[rightJoystickAxes.y[0]];
+                    updateJoystickPosition('right', rightX, rightY);
+                    updateJoystickValues('right', rightX, rightY);
+                } else {
+                    rightVisualization.style.display = 'none';
+                    rightPlaceholder.style.display = 'block';
+                    resetJoystickValues('right');
+                }
+            }
+
+            // Show joysticks section if gamepad has axes
+            const joysticksSection = gamepadDisplayElement.querySelector('.joysticks-section');
+            if (joysticksSection && gamepad.axes.length > 0) {
+                joysticksSection.style.display = 'block';
+            }
+
+            animationFrameId = requestAnimationFrame(updateGamepadDisplay);
+        }
+
+        // Helper function to reset joystick values when hidden
+        const resetJoystickValues = (stick) => {
+            updateJoystickPosition(stick, 0, 0);
+            updateJoystickValues(stick, 0, 0);
+        };
+
+        // Helper function to update joystick position
+        const updateJoystickPosition = (stick, x, y) => {
+            const cacheKey = `joystick_${stick}`;
+            if (!domCache.axes[cacheKey]) {
+                domCache.axes[cacheKey] = {
+                    position: gamepadDisplayElement.querySelector(`.joystick-position[data-stick="${stick}"]`)
+                };
+            }
+
+            const position = domCache.axes[cacheKey].position;
+            if (position) {
+                // Convert axis values (-1 to 1) to pixel positions within the joystick area
+                const centerX = 50;
+                const centerY = 50;
+                const maxOffset = 35;
+
+                const posX = centerX + (x * maxOffset);
+                const posY = centerY + (y * maxOffset);
+
+                position.style.left = `${posX}%`;
+                position.style.top = `${posY}%`;
+
+                // Add glow effect based on distance from center
+                const distance = Math.sqrt(x * x + y * y);
+                position.style.boxShadow = distance > 0 ? 
+                    `0 0 ${distance * 10}px var(--primary-color)` : 'none';
+                position.style.opacity = 0.8 + (distance * 0.2);
+            }
+        };
+
+        // Helper function to update joystick value displays
+        const updateJoystickValues = (stick, x, y) => {
+            const cacheKey = `joystick_values_${stick}`;
+            if (!domCache.axes[cacheKey]) {
+                domCache.axes[cacheKey] = {
+                    x: gamepadDisplayElement.querySelector(`.value-number[data-stick="${stick}-x"]`),
+                    y: gamepadDisplayElement.querySelector(`.value-number[data-stick="${stick}-y"]`)
+                };
+            }
+
+            const elements = domCache.axes[cacheKey];
+            if (elements.x) elements.x.textContent = x.toFixed(2);
+            if (elements.y) elements.y.textContent = y.toFixed(2);
+        };
+
+        // Helper functions for gamepad display
+        const formatGamepadName = gamepad => gamepad.id;
+
+        const getGamepadInfo = gamepad => {
+            const requiredInfo = [
+                { label: 'ID', value: gamepad.id, isPrimary: true },
+                { label: 'INDEX', value: gamepad.index, isPrimary: true },
+                { label: 'TIMESTAMP', value: gamepad.timestamp.toFixed(5), isTimestamp: true },
+                { label: 'CONNECTED', value: gamepad.connected ? 'Yes' : 'No' },
+                { label: 'MAPPING', value: gamepad.mapping },
+                { label: 'AXES', value: gamepad.axes.length },
+                { label: 'BUTTONS', value: gamepad.buttons.length }
+            ];
+
+            const optionalInfo = [
+                { property: 'pose', label: 'POSE' },
+                { property: 'hapticActuators', label: 'HAPTIC' },
+                { property: 'hand', label: 'HAND' },
+                { property: 'displayId', label: 'DISPLAY' },
+                { property: 'vibrationActuator', label: 'VIBRATION', value: 'Available' }
+            ];
+
+            return [
+                ...requiredInfo,
+                ...optionalInfo
+                    .filter(({ property }) => gamepad[property])
+                    .map(({ label, value }) => ({
+                        label,
+                        value: value || JSON.stringify(gamepad[label.toLowerCase()])
+                    }))
+            ];
+        };
+
+        const handleCheckboxChange = (toggleElement) => {
+            const type = toggleElement.dataset.type;
+            const index = parseInt(toggleElement.dataset.index);
+            const input = getInputElement(type, index);
+            const isActive = toggleElement.classList.contains('active');
+            
+            if (input) {
+                if (!isActive) {
+                    const currentValue = input.value;
+                    input.value = 'N/A';
+                    input.disabled = true;
+                    const state = initializeState(type, index);
+                    state.previousValue = currentValue;
+                    state.unused = true;
+                    state.name = 'N/A';
+                    toggleElement.classList.add('active');
+                } else {
+                    input.disabled = false;
+                    const state = inputStates[type][index];
+                    if (state && state.previousValue) {
+                        input.value = state.previousValue;
+                        state.name = state.previousValue;
+                    } else {
+                        input.value = '';
+                        input.placeholder = type === 'buttons' ? 'Button mapping' : 'Axis mapping';
+                    }
+                    state.unused = false;
+                    toggleElement.classList.remove('active');
+                }
+            }
+        };
+
+        const getInputState = (type, index, isName) => {
+            const state = initializeState(type, index);
+            
+            // Only provide default mappings if it hasn't been modified by the user
+            if (isName && !state.hasBeenModified) {
+                if (gamepad && gamepad.mapping === 'standard') {
+                    // For standard gamepad mapping
+                    if (type === 'buttons' && STANDARD_BUTTON_MAPPINGS[index]) {
+                        return STANDARD_BUTTON_MAPPINGS[index];
+                    } else if (type === 'axes' && STANDARD_AXES_MAPPINGS[index]) {
+                        return STANDARD_AXES_MAPPINGS[index];
+                    }
+                } else if (gamepad && gamepad.mapping === 'xr-standard') {
+                    // For XR standard mapping
+                    if (type === 'buttons' && XR_STANDARD_BUTTON_MAPPINGS[index]) {
+                        return XR_STANDARD_BUTTON_MAPPINGS[index];
+                    } else if (type === 'axes' && XR_STANDARD_AXES_MAPPINGS[index]) {
+                        return XR_STANDARD_AXES_MAPPINGS[index];
+                    }
+                }
+                // For any other mapping or undefined indices, return empty string
+                return '';
+            }
+            
+            return isName ? state.name : state.unused;
+        };
+
+        const saveInputState = (type, index, isName, value) => {
+            const state = initializeState(type, index);
+            if (isName) {
+                state.name = value;
+                state.previousValue = value;
+                state.hasBeenModified = true; // Mark as manually modified
+            } else {
+                state.unused = value;
+            }
+        };
+
+        // Function to generate mapping data
+        const generateMappingData = (gamepad) => {
+            const mapping = {
+                name: inputStates.controllerName || "Untitled",
+                id: gamepad.id,
+                axes: {},
+                buttons: {}
+            };
+
+            // Process axes first
+            Array.from({ length: gamepad.axes.length }).forEach((_, index) => {
+                const isUnused = getInputElement('axes', index)?.disabled || false;
+                const nameInput = getInputElement('axes', index);
+                mapping.axes[index] = isUnused ? "N/A" : (nameInput?.value || "");
+            });
+
+            // Then process buttons
+            Array.from({ length: gamepad.buttons.length }).forEach((_, index) => {
+                const isUnused = getInputElement('buttons', index)?.disabled || false;
+                const nameInput = getInputElement('buttons', index);
+                mapping.buttons[index] = isUnused ? "N/A" : (nameInput?.value || "");
+            });
+
+            return mapping;
+        };
+
+        // Function to download the mapping
+        window.downloadMapping = () => {
+            const mapping = generateMappingData(gamepad);
+            const jsonStr = JSON.stringify(mapping, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const date = new Date().toISOString().split('T')[0];
+            const filename = `${mapping.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${date}.json`;
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        const startGamepadUpdates = () => {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            updateGamepadDisplay();
+        };
+
+        const stopGamepadUpdates = () => {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+        };
+
+        // Initialize gamepad detection
+        const initGamepad = () => {
+            // Check if Gamepad API is supported
+            if (!navigator.getGamepads) {
+                return;
+            }
+
+            // Check for existing gamepads
+            const gamepads = navigator.getGamepads();
+            const connectedGamepads = Array.from(gamepads).filter(pad => pad !== null);
+            
+            for (let i = 0; i < gamepads.length; i++) {
+                const pad = gamepads[i];
+                if (pad) {
+                    gamepadIndex = i;
+                    gamepad = pad;
+                    startGamepadUpdates();
+                    break;
+                }
+            }
+
+            // Add event listeners
+        window.addEventListener("gamepadconnected", (e) => {
+            gamepadIndex = e.gamepad.index;
+            gamepad = e.gamepad;
+                startGamepadUpdates();
+            });
+
+            window.addEventListener("gamepaddisconnected", (e) => {
+                if (e.gamepad.index === gamepadIndex) {
+                    stopGamepadUpdates();
+                    document.getElementById("gamepadDisplay").innerHTML = `
+                        <div class="no-gamepad">
+                            <div class="waiting-animation">🎮</div>
+                            <p>No gamepad detected. Please connect a gamepad and press any button to continue...</p>
+                        </div>
+                    `;
+                }
+            });
+        };
+
+        // Start gamepad detection when the page loads
+        window.addEventListener('DOMContentLoaded', initGamepad);
+
+        // Vibration control functions
+        async function testVibrationQuick(event) {
+            if (!gamepad || !gamepad.vibrationActuator) return;
+
+            const button = event.target;
+            if (button.classList.contains('active')) return;
+
+            button.classList.add('active');
+            
+            try {
+                await gamepad.vibrationActuator.playEffect('dual-rumble', {
+                    startDelay: 0,
+                    duration: 1000,
+                    weakMagnitude: 1.0,
+                    strongMagnitude: 1.0
+                });
+            } catch (error) {
+                console.error('Vibration error:', error);
+            }
+
+            setTimeout(() => {
+                button.classList.remove('active');
+            }, 1000);
+        }
+
+        function toggleGuide() {
+            const guideContent = document.querySelector('.guide-content');
+            const arrowIcon = document.querySelector('.arrow-icon');
+            
+            if (guideContent && arrowIcon) {
+                guideContent.classList.toggle('expanded');
+                arrowIcon.classList.toggle('expanded');
+            }
+        }
+    </script>
+</body>
+</html> 
