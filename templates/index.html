@@ -1218,59 +1218,59 @@
             if (!gamepadDisplayElement.querySelector('.gamepad-name')) {
                 const infoItems = getGamepadInfo(gamepad);
                 gamepadDisplayElement.innerHTML = `
-        <div class="header-section">
+                    <div class="header-section">
                         <div class="gamepad-name"><span class="header-emoji">🎮</span> Gamepad Mapper</div>
-        </div>
+                    </div>
 
-        <div class="name-section">
-            <div class="custom-name-input">
+                    <div class="name-section">
+                        <div class="custom-name-input">
                             <input type="text" placeholder="Gamepad name" class="input-name controller-name" 
                                 value="${inputStates.controllerName}">
                             <div class="download-button">
                                 <button onclick="downloadMapping()">Download Mapping</button>
                             </div>
-            </div>
-        </div>
-
-        <div class="info-section">
-                        <h3>Gamepad Information</h3>
-            <div class="info-rows">
-                <div class="info-row">
-                        <div class="info-item full-width">
-                            <div class="info-content">
-                                        <div class="info-label">ID</div>
-                                        <div class="info-value primary">${gamepad.id}</div>
-                            </div>
-                            <div class="info-status">
-                                        <div class="connection-status ${gamepad.connected ? 'connected' : 'disconnected'}">
-                                            ${gamepad.connected ? 'Connected' : 'Disconnected'}
-                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="info-row">
-                    <div class="info-row-section">
-                        <div class="info-item">
-                                <div class="info-label">Index</div>
-                                        <div class="info-value">${gamepad.index}</div>
+                    <div class="info-section">
+                        <h3>Gamepad Information</h3>
+                        <div class="info-rows">
+                            <div class="info-row">
+                                <div class="info-item full-width">
+                                    <div class="info-content">
+                                        <div class="info-label">ID</div>
+                                        <div class="info-value primary">${gamepad.id}</div>
+                                    </div>
+                                    <div class="info-status">
+                                        <div class="connection-status ${gamepad.connected ? 'connected' : 'disconnected'}">
+                                            ${gamepad.connected ? 'Connected' : 'Disconnected'}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
+                            <div class="info-row">
+                                <div class="info-row-section">
+                                    <div class="info-item">
+                                        <div class="info-label">Index</div>
+                                        <div class="info-value">${gamepad.index}</div>
+                                    </div>
                                     <div class="info-item">
                                         <div class="info-label">Timestamp</div>
                                         <div class="info-value timestamp" data-info-type="TIMESTAMP">${gamepad.timestamp.toFixed(5)}</div>
-                        </div>
-                        <div class="info-item">
-                                <div class="info-label">Mapping</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Mapping</div>
                                         <div class="info-value">${gamepad.mapping || 'N/A'}</div>
-                            </div>
+                                    </div>
                                     <div class="info-item">
                                         <div class="info-label">Axes</div>
                                         <div class="info-value">${gamepad.axes ? gamepad.axes.length : 'N/A'}</div>
-                        </div>
-                        <div class="info-item">
+                                    </div>
+                                    <div class="info-item">
                                         <div class="info-label">Buttons</div>
                                         <div class="info-value">${gamepad.buttons ? gamepad.buttons.length : 'N/A'}</div>
-                            </div>
+                                    </div>
                                     <div class="info-item">
                                         <div class="info-label">Vibration</div>
                                         <div class="info-value">${gamepad.vibrationActuator ? 'Supported' : 'N/A'}</div>
@@ -1279,13 +1279,13 @@
                                             Test
                                         </button>
                                         ` : ''}
-                        </div>
-                    </div>
+                                    </div>
+                                </div>
                                 <div class="info-row-section secondary">
                                     <div class="info-item">
                                         <div class="info-label">Hand</div>
                                         <div class="info-value">${gamepad.hand || 'N/A'}</div>
-                </div>
+                                    </div>
                                     <div class="info-item">
                                         <div class="info-label">Haptic</div>
                                         <div class="info-value">${gamepad.hapticActuators ? 'Available' : 'N/A'}</div>
@@ -1316,8 +1316,8 @@
                                     </div>
                                 </div>
                             </div>
-            </div>
-        </div>
+                        </div>
+                    </div>
 
                     <div class="info-section">
                         <div class="guide-header" onclick="toggleGuide()">
@@ -1355,7 +1355,7 @@
                     </div>
 
                     <div class="controls-grid">
-        <div class="control-section">
+                        <div class="control-section">
                             <h3>Axes</h3>
                             <div class="axes-grid">
                                 ${Array.from(gamepad.axes).map((axis, index) => `
@@ -1364,9 +1364,9 @@
                                         <div class="value-display">
                                             <div class="axis-bar-container" data-axis-index="${index}">
                                                 <div class="axis-bar-fill"></div>
-                    </div>
+                                            </div>
                                             <span class="value-number" data-axis-value="${index}">0.00</span>
-                </div>
+                                        </div>
                                         <input type="text" placeholder="Axis mapping" class="input-name" 
                                             data-type="axes" data-index="${index}"
                                             value="${getInputState('axes', index, true)}">
@@ -1375,10 +1375,10 @@
                                             <svg viewBox="0 0 24 24" fill="currentColor">
                                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/>
                                             </svg>
-                    </div>
-                </div>
+                                        </div>
+                                    </div>
                                 `).join('')}
-            </div>
+                            </div>
                             <div class="joysticks-section">
                                 <div class="joysticks-grid">
                                     <div class="joystick-container">
@@ -1448,8 +1448,8 @@
                                         </div>
                                     </div>
                                 </div>
-        </div>
-    </div>
+                            </div>
+                        </div>
 
                         <div class="control-section">
                             <h3>Buttons</h3>
@@ -1572,7 +1572,7 @@
                     if (axis > 0) {
                         elements.fill.style.bottom = '50%';
                         elements.fill.className = 'axis-bar-fill positive';
-            } else {
+                    } else {
                         elements.fill.style.bottom = `${50 - height}%`;
                         elements.fill.className = 'axis-bar-fill negative';
                     }
@@ -1958,4 +1958,4 @@
         }
     </script>
 </body>
-</html>
+</html> 
