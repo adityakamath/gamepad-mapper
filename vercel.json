@@ -11,5 +11,12 @@
             "src": "/(.*)",
             "dest": "app.py"
         }
-    ]
+    ],
+    "rewrites": [
+        {
+            "source": "/gamepad-mapper/:path*",
+            "destination": "/:path*"
+        }
+    ],
+    "trailingSlash": false
 } 
