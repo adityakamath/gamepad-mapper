@@ -1142,32 +1142,55 @@
             3: 'ThumbY'
         };
 
-        // Function to determine connection type based on gamepad properties
-        function determineConnectionType(gamepad) {
-            const id = gamepad.id.toLowerCase();
-            
-            // Check for explicit USB indicators first
-            if (id.includes('usb') || id.includes('xinput') || id.includes('dinput') || id.includes('standard gamepad')) {
-                return 'USB';
-            }
-            
-            // Then check for explicit Bluetooth indicators
-            if (id.includes('bluetooth')) {
-                return 'Bluetooth';
-            }
-            
-            // Check for WiFi indicators
-            if (id.includes('wifi')) {
-                return 'WiFi';
+        // Add WebSocket support for Linux joysticks
+        let wsConnection = null;
+        let linuxGamepad = null;
+
+        const connectToLinuxJoystick = () => {
+            if (wsConnection) {
+                return; // Already connected
             }
 
-            // If no explicit indicators found, check if connected via USB vendor ID
-            if (id.match(/vendor: [0-9a-f]+/i)) {
-                return 'USB';
-            }
-
-            return 'USB';
-        }
+            wsConnection = new WebSocket('ws://localhost:8765');
+            
+            wsConnection.onopen = () => {
+                console.log('Connected to Linux joystick server');
+            };
+            
+            wsConnection.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.connected) {
+                    linuxGamepad = data;
+                    // If no other gamepad is selected, select the Linux joystick
+                    if (gamepadIndex === null) {
+                        gamepadIndex = 'linux';
+                        startGamepadUpdates();
+                    }
+                } else {
+                    linuxGamepad = null;
+                    if (gamepadIndex === 'linux') {
+                        gamepadIndex = null;
+                        stopGamepadUpdates();
+                    }
+                }
+            };
+            
+            wsConnection.onclose = () => {
+                console.log('Disconnected from Linux joystick server');
+                wsConnection = null;
+                linuxGamepad = null;
+                if (gamepadIndex === 'linux') {
+                    gamepadIndex = null;
+                    stopGamepadUpdates();
+                }
+                // Try to reconnect after a delay
+                setTimeout(connectToLinuxJoystick, 5000);
+            };
+            
+            wsConnection.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+        };
 
         // Optimized utility functions
         const getInputElement = (type, index) => {
@@ -1199,7 +1222,7 @@
         };
 
         // Optimized gamepad display update
-        function updateGamepadDisplay() {
+        const updateGamepadDisplay = () => {
             const currentTime = performance.now();
             if (currentTime - lastUpdateTime < FRAME_INTERVAL) {
                 animationFrameId = requestAnimationFrame(updateGamepadDisplay);
@@ -1207,11 +1230,23 @@
             }
             lastUpdateTime = currentTime;
 
-            gamepad = navigator.getGamepads()[gamepadIndex];
-            
-            if (!gamepad) {
-                stopGamepadUpdates();
-                return;
+            // Handle Linux joystick
+            if (gamepadIndex === 'linux') {
+                if (!linuxGamepad) {
+                    stopGamepadUpdates();
+                    return;
+                }
+                gamepad = {
+                    ...linuxGamepad,
+                    timestamp: performance.now()
+                };
+            } else {
+                // Handle Web Gamepad API
+                gamepad = navigator.getGamepads()[gamepadIndex];
+                if (!gamepad) {
+                    stopGamepadUpdates();
+                    return;
+                }
             }
 
             // Only create the full structure if it doesn't exist
@@ -1879,42 +1914,49 @@
 
         // Initialize gamepad detection
         const initGamepad = () => {
-            // Check if Gamepad API is supported
-            if (!navigator.getGamepads) {
-                return;
-            }
+            // Try to connect to Linux joystick server
+            connectToLinuxJoystick();
 
-            // Check for existing gamepads
-            const gamepads = navigator.getGamepads();
-            const connectedGamepads = Array.from(gamepads).filter(pad => pad !== null);
-            
-            for (let i = 0; i < gamepads.length; i++) {
-                const pad = gamepads[i];
-                if (pad) {
-                    gamepadIndex = i;
-                    gamepad = pad;
-                    startGamepadUpdates();
-                    break;
+            // Check for Web Gamepad API support
+            if (navigator.getGamepads) {
+                // Check for existing gamepads
+                const gamepads = navigator.getGamepads();
+                for (let i = 0; i < gamepads.length; i++) {
+                    const pad = gamepads[i];
+                    if (pad) {
+                        gamepadIndex = i;
+                        gamepad = pad;
+                        startGamepadUpdates();
+                        break;
+                    }
                 }
             }
 
-            // Add event listeners
-        window.addEventListener("gamepadconnected", (e) => {
-            gamepadIndex = e.gamepad.index;
-            gamepad = e.gamepad;
-                startGamepadUpdates();
+            // Add event listeners for Web Gamepad API
+            window.addEventListener("gamepadconnected", (e) => {
+                if (gamepadIndex === null || gamepadIndex === 'linux') {
+                    gamepadIndex = e.gamepad.index;
+                    gamepad = e.gamepad;
+                    startGamepadUpdates();
+                }
             });
 
             window.addEventListener("gamepaddisconnected", (e) => {
                 if (e.gamepad.index === gamepadIndex) {
-                    stopGamepadUpdates();
-                    document.getElementById("gamepadDisplay").innerHTML = `
-                        <div class="no-gamepad">
-                            <div class="waiting-animation">🎮</div>
-                            <h1 class="waiting-title">Gamepad Mapper</h1>
-                            <p>No gamepad detected. Please connect a gamepad and press any button to continue...</p>
-                        </div>
-                    `;
+                    // If Linux joystick is available, switch to it
+                    if (linuxGamepad) {
+                        gamepadIndex = 'linux';
+                        startGamepadUpdates();
+                    } else {
+                        stopGamepadUpdates();
+                        document.getElementById("gamepadDisplay").innerHTML = `
+                            <div class="no-gamepad">
+                                <div class="waiting-animation">🎮</div>
+                                <h1 class="waiting-title">Gamepad Mapper</h1>
+                                <p>No gamepad detected. Please connect a gamepad and press any button to continue...</p>
+                            </div>
+                        `;
+                    }
                 }
             });
         };
