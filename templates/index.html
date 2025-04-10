@@ -1028,145 +1028,42 @@
         }
 
         .footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             padding: 20px;
             color: var(--text-secondary);
             font-size: 14px;
             margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .footer a {
-            color: var(--primary-color);
+            color: var(--text-secondary);
             text-decoration: none;
-            transition: opacity 0.2s ease;
         }
 
         .footer a:hover {
-            opacity: 0.8;
-        }
-
-        @media (max-width: 768px) {
-            .footer {
-                flex-direction: column;
-                gap: 10px;
-                text-align: center;
-            }
-        }
-
-        .info-section, .control-section, .name-section {
-            background: var(--card-background);
-            border: 1px solid var(--border-color);
-        }
-
-        .info-row, .controller-name {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
             color: var(--text-primary);
         }
 
-        .info-item {
-            background: var(--card-background);
-            border: 1px solid var(--border-color);
-        }
-
-        .button-display {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-        }
-
-        .button-display.pressed {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-            box-shadow: 0 0 8px rgba(33, 150, 243, 0.4);
-        }
-
-        select, input, button {
-            background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-        }
-
-        select:hover, input:hover, button:hover {
-            background-color: var(--hover-bg);
-        }
-
-        select:focus, input:focus, button:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
-            outline: none;
-        }
-
-        .axis-bar {
-            background-color: var(--border-color);
-        }
-
-        .axis-value {
-            background-color: var(--primary-color);
-        }
-
-        .connection-status {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            padding: 4px 8px;
-            border-radius: 4px;
+        .copyright {
             display: flex;
             align-items: center;
-            gap: 6px;
         }
 
-        .connection-status.connected {
-            background-color: var(--success-color);
-            border-color: var(--success-color);
-            color: white;
+        .attribution {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .connection-status.disconnected {
-            background-color: var(--danger-color);
-            border-color: var(--danger-color);
-            color: white;
-        }
-
+        /* Override GitHub button styles to match SO-100 playground */
         .github-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 4px 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 14px;
-            transition: var(--transition);
-        }
-
-        .github-button:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
-        }
-
-        .github-button .star-icon {
-            font-size: 16px;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-top: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .footer p {
-            margin: 0;
+            background: none !important;
+            border: none !important;
+            padding: 0 !important;
+            font: inherit !important;
+            color: inherit !important;
         }
     </style>
     <!-- Add GitHub Buttons script -->
@@ -1182,8 +1079,12 @@
             </div>
         </div>
         <footer class="footer">
-            <p>Created by Aditya Kamath</p>
-            <a class="github-button" href="https://github.com/adityakamath/gamepad-mapper" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-show-count="true" aria-label="Star adityakamath/gamepad-mapper on GitHub">⭐ Star</a>
+            <div class="copyright">
+                © 2025 <a href="https://kamathsblog.com/" target="_blank">kamathsblog.com</a>
+            </div>
+            <div class="attribution">
+                Created by Aditya Kamath | <a class="github-button" href="https://github.com/adityakamath/gamepad-mapper" data-color-scheme="no-preference: dark; light: dark; dark: dark;" aria-label="Star adityakamath/gamepad-mapper on GitHub">Star</a>
+            </div>
         </footer>
     </div>
 
