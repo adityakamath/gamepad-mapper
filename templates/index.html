@@ -1065,6 +1065,24 @@
             font: inherit !important;
             color: inherit !important;
         }
+
+        input[type="text"] {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 5px 10px;
+            margin: 2px 0;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
     </style>
     <!-- Add GitHub Buttons script -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
